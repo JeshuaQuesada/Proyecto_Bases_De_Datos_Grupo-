@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en"
+        xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+     <link rel="stylesheet" th:href="@{/css/estilos.css}">
+
+    <title>Blue Orchid</title>
+</head>
+<body>
+    <header th:replace="~{layout/plantilla :: header}"></header>
+    <body>
+        <br>
+      <div class="h2">
+        <h2>Revisa la informacion de cada servicio</h2>
+      </div>
+      <br>
+
+
+      <div class="Servicios2">
+              <div class="contenedor tresColumnas">
+        <article class="entrada-blog">
+            <div class="Icono1">
+                <div class="icono">
+   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" width="44" height="44" stroke-width="1.25">
+  <path d="M5 11h14v-3h-14z"></path>
+  <path d="M17.5 11l-1.5 10h-8l-1.5 -10"></path>
+  <path d="M6 8v-1a2 2 0 0 1 2 -2h8a2 2 0 0 1 2 2v1"></path>
+  <path d="M15 5v-2"></path>
+</svg>
+                </div>
+                 </div>
+              <br>
+            <h1>Comidas Y Bebidas</h1>
+            <h4>En Blue Orchid, la gastronomía es una parte esencial de la experiencia de nuestros huéspedes. Nuestros talentosos chefs crean platos exquisitos utilizando ingredientes frescos de la más alta calidad, fusionando sabores locales e internacionales para ofrecerte una experiencia culinaria inolvidable..</h4>
+        </article>
+                  
+        <article class="entrada-blog">
+                <div class="Icono1">
+                    <div class="icono">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" width="44" height="44" stroke-width="1.25">
+  <path d="M4 17m-1 0a1 1 0 1 0 2 0a1 1 0 1 0 -2 0"></path>
+  <path d="M9 5m-1 0a1 1 0 1 0 2 0a1 1 0 1 0 -2 0"></path>
+  <path d="M4 22l4 -2v-3h12"></path>
+  <path d="M11 20h9"></path>
+  <path d="M8 14l3 -2l1 -4c3 1 3 4 3 6"></path>
+</svg>  <br>
+</div>
+                    </div>
+
+            <h1>Spa y relajacion.</h1>
+           <h4>Escapa del estrés diario y sumérgete en un oasis de paz en el Spa Blue Orchid. Nuestros terapeutas expertos te guiarán a través de una selección de tratamientos rejuvenecedores, desde masajes relajantes con aceites esenciales hasta tratamientos faciales revitalizantes y terapias corporales indulgentes.</h4>
+        </article>
+
+        <article class="entrada-blog">
+            <div class="Icono1">
+            <div class="icono">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" width="44" height="44" stroke-width="1.25">
+  <path d="M4 4m0 2a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v12a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2z"></path>
+  <path d="M8 11l0 5"></path>
+  <path d="M8 8l0 .01"></path>
+  <path d="M12 16l0 -5"></path>
+  <path d="M16 16v-3a2 2 0 0 0 -4 0"></path>
+</svg>
+</div>
+                <br>
+             </div>
+            <h1>Trabaja Con Nosotros.</h1>
+            <h4>En Blue Orchid, creemos que nuestro equipo es el corazón de nuestra hospitalidad excepcional. Buscamos personas apasionadas, dedicadas y con espíritu de servicio para unirse a nuestra creciente familia.</h4>
+       
+        </article>
+    </div>
+
+        </div>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        
+        <footer th:replace="~{layout/plantilla :: footer}"></footer>
+</body>
+</html>
