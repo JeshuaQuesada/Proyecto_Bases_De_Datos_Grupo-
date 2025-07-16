@@ -71,5 +71,19 @@ FROM USUARIO U
 JOIN ROL R ON U.id_usuario = R.id_usuario;
 
 
+DECLARE
+    user_id NUMBER := &user_empleado;
+    nombre_completo VARCHAR2(100);
+BEGIN
+    SELECT FIRST_NAME || ' ' || LAST_NAME INTO nombre_completo
+    FROM USUARIO
+    WHERE ID_USUARIO = emp_id;
+    
+    DBMS_OUTPUT.PUT_LINE('Nombre completo del usuario: ' || nombre_completo);
+EXCEPTION
+    WHEN NO_DATA_FOUND THEN
+        DBMS_OUTPUT.PUT_LINE('Usuario no encontrado');
+END;
+
 
 
