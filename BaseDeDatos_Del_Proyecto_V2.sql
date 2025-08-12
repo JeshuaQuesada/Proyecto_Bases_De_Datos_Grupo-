@@ -158,3 +158,23 @@ END CALL_SP_USUARIOS_INFO;
 
 EXEC CALL_SP_USUARIOS_INFO(2)
 
+
+
+-- pl/sql
+SELECT telefono
+FROM reservas
+WHERE REGEXP_COUNT(telefono, '2') >= 2
+AND REGEXP_COUNT(telefono, '4') >= 2;
+
+
+SELECT id_rol, nombre, id_usuario, DECODE(id_rol,1, 'ADMIN'
+                                                ,2, 'USER'
+                                                ,3, 'USER',
+                                                id_rol) ROL
+FROM rol;
+
+
+
+SELECt NOMBRE, APELLIDO 
+FROM USUARIO
+WHERE REGEXP_LIKE(NOMBRE,'^Da{1,3}[^a].*a$');
