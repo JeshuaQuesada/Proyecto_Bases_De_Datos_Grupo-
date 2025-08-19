@@ -1,180 +1,259 @@
--- Validamos que este el usuario y lo creamos todo poderoso.
-DROP SCHEMA IF EXISTS hotel;
-DROP USER IF EXISTS usuario_hotel;
-CREATE SCHEMA hotel;
-CREATE USER 'usuario_hotel'@'%' IDENTIFIED BY 'Hotel_Clave.';
-GRANT ALL PRIVILEGES ON hotel.* TO 'usuario_hotel'@'%';
-FLUSH PRIVILEGES;
-USE hotel;
-
--- creamos la tabla para las reservas 
-CREATE TABLE reservas (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    nombre VARCHAR(100) NOT NULL,
-    apellido VARCHAR(100),
-    cedula VARCHAR(20),
-    telefono VARCHAR(20),
-    correo VARCHAR(100),
-    tipo_habitacion varchar(100) NOT NULL,
-    activo boolean default true
-);
-
---Datos de ejemplo
-INSERT INTO reservas (nombre, apellido, cedula, telefono, correo, tipo_habitacion, activo) VALUES
-INSERT INTO reservas (nombre, apellido, cedula, telefono, correo, tipo_habitacion, activo) VALUES('Ana', 'GarcÌa', '12345678', '111222333', 'ana.garcia@example.com', 'Estandar', TRUE);
-INSERT INTO reservas (nombre, apellido, cedula, telefono, correo, tipo_habitacion, activo) VALUES('Carlos', 'LÛpez', '87654321', '444555666', 'carlos.lopez@example.com', 'Suite', TRUE);
-INSERT INTO reservas (nombre, apellido, cedula, telefono, correo, tipo_habitacion, activo) VALUES('Laura', 'MartÌnez', '98761234', '777888999', 'laura.martinez@example.com', 'Suite', TRUE);
-INSERT INTO reservas (nombre, apellido, cedula, telefono, correo, tipo_habitacion, activo) VALUES('Pedro', 'RodrÌguez', '43219876', '101112131', 'pedro.rodriguez@example.com', 'Premium', TRUE);
-INSERT INTO reservas (nombre, apellido, cedula, telefono, correo, tipo_habitacion, activo) VALUES('SofÌa', 'PÈrez', '11223344', '141516171', 'sofia.perez@example.com', 'Estandar', TRUE);
-INSERT INTO reservas (nombre, apellido, cedula, telefono, correo, tipo_habitacion, activo) VALUES('Diego', 'S·nchez', '44332211', '181920212', 'diego.sanchez@example.com', 'Premium', TRUE);
-
---Creamos la tabla de usuarios
-CREATE TABLE usuario (
-  id_usuario INT NOT NULL,
-  username VARCHAR2(20) NOT NULL,
-  password VARCHAR2(512) NOT NULL,
-  nombre VARCHAR2(20) NOT NULL,
-  apellido VARCHAR2(30) NOT NULL,
-  correo VARCHAR2(75),
-  telefono VARCHAR2(15),
-  activo NUMBER(1) DEFAULT 1, -- 1 = true, 0 = false
-  PRIMARY KEY (id_usuario)
-)
-
---Tabla de roles
-CREATE TABLE role (  
-  rol varchar(20),
-  PRIMARY KEY (rol)  
-);
-
-INSERT INTO role (rol) VALUES ('ADMIN'), ('USER');
-
---le ponemos los roles a los usuarios
-CREATE TABLE rol (
-  id_rol INT NOT NULL,
-  nombre VARCHAR2(20),
-  id_usuario INT,
-  PRIMARY KEY (id_rol)
-);
-
---Ignorar
-INSERT INTO rol (id_rol, nombre, id_usuario) VALUES (1, 'ADMIN', 1);
-INSERT INTO rol (id_rol, nombre, id_usuario) VALUES  (2, 'USER', 1);
-INSERT INTO rol (id_rol, nombre, id_usuario) VALUES  (3, 'USER', 2);
-
---Ingnorar
-INSERT INTO usuario (id_usuario, username, password, nombre, apellido, correo, telefono, activo) VALUES (1, 'juan', '$2a$10$P1.w58XvnaYQUQgZUCk4aO/RTRl8EValluCqB3S2VMLTbRt.tlre.', 'Juan', 'Castro Mora', 'jcastro@gmail.com', '4556-8978', 1);
-INSERT INTO usuario (id_usuario, username, password, nombre, apellido, correo, telefono, activo) VALUES (2, 'rebeca', '$2a$10$GkEj.ZzmQa/aEfDmtLIh3udIH5fMphx/35d0EYeqZL5uzgCJ0lQRi', 'Rebeca', 'Contreras Mora', 'acontreras@gmail.com', '5456-8789', 1);
-
-SELECT U.username, R.nombre
-FROM USUARIO U
-JOIN ROL R ON U.id_usuario = R.id_usuario;
+ALTER USER usuario_hotel IDENTIFIED BY "1234";
+ALTER USER USUARIO_HOTEL ACCOUNT UNLOCK;
 
 
-DECLARE
-    user_id NUMBER := &user_empleado;
-    nombre_completo VARCHAR2(100);
-BEGIN
-    SELECT FIRST_NAME || ' ' || LAST_NAME INTO nombre_completo
-    FROM USUARIO
-    WHERE ID_USUARIO = emp_id;
-    
-    DBMS_OUTPUT.PUT_LINE('Nombre completo del usuario: ' || nombre_completo);
-EXCEPTION
-    WHEN NO_DATA_FOUND THEN
-        DBMS_OUTPUT.PUT_LINE('Usuario no encontrado');
-END;
 
--- Funciones
- 
- 
-CREATE OR REPLACE FUNCTION FN_CANT_RESERVAS(RESERVA_ID NUMBER)
-RETURN NUMBER
-IS
-  V_COUNT NUMBER;
-BEGIN
-  SELECT COUNT(*)
-  INTO V_COUNT
-  FROM reservas
-  WHERE id = RESERVA_ID;
- 
-  RETURN V_COUNT;
-END;
+SELECT *FROM USUARIO_HOTEL.RESERVAS;
+SELECT * FROM USUARIO_HOTEL.RESERVAS_AUDITORIA;
+SELECT * FROM USUARIO_HOTEL.USUARIOS;
 
- 
-EXEC DBMS_OUTPUT.PUT_LINE('Cantidad: ' || FN_CANT_RESERVAS(50));
- 
- 
--- SP
- 
-CREATE OR REPLACE PROCEDURE SP_RESERVA_INFO
-IS
-  CURSOR C IS
-    SELECT R.ID, R.NOMBRE, R.APELLIDO, R.CEDULA, R.TELEFONO, R.CORREO, R.TIPO_HABITACION, R.ACTIVO
-    FROM reservas R
-BEGIN
-  FOR R LOOP
-    DBMS_OUTPUT.PUT_LINE('ID: ' || R.ID || ' Nombre: ' || R.NOMBRE ||
-      ' Apellido: ' || R.APELLIDO || ' Cedula: ' || R.CEDULA ||
-      ' TelÈfono: ' || R.TELEFONO || ' Ciudad: ' || R.CORREO ||
-      ' PaÌs: ' || R.TIPO_HABITACION || ' Activo: ' R.ACTIVO);
-  END LOOP;
-END;
+
+-- Secuencia para la tabla de usuarios
+create sequence usuarios_seq start with 1 increment by 1;
 /
- 
-EXEC SP_RESERVA_INFO;
 
+-- Tabla de usuarios
+create table usuarios (
+    id number default usuarios_seq.nextval,
+    username varchar2(100) not null unique,
+    nombre varchar2(100) not null,
+    apellido varchar2(100),
+    correo varchar2(100),
+    telefono varchar2(20),
+    contrasena varchar2(100) not null,
+    activo number(1),
+    constraint pk_usuarios primary key (id)
+);
+/
 
--- un sp que envia info del usuario que se envie por el numero de id con un cursor
-CREATE OR REPLACE PROCEDURE SP_USUARIOS_INFO(USUARIODATOS OUT SYS_REFCURSOR, USUARIO IN NUMBER)
-AS
-BEGIN
-    OPEN USUARIODATOS FOR SELECT U.ID_USUARIO, U.USERNAME || ' ' || U.NOMBRE, U.APELLIDO, U.CORREO, U.TELEFONO
-                  FROM usuario U 
-                  WHERE U.ID_USUARIO = USUARIO
-                  ORDER BY 1;    
-END;
+-- secuencia Reservas
+create sequence reservas_seq start with 1 increment by 1;
+/
 
+-- Tabla de reservas
+create table reservas (
+    id number default reservas_seq.nextval,
+    nombre varchar2(100) not null,
+    apellido varchar2(100),
+    cedula varchar2(20),
+    telefono varchar2(20),
+    correo varchar2(100),
+    tipo_habitacion varchar2(100) not null,
+    activo varchar2(1) default 'Y',
+    constraint pk_reservas primary key (id)
+);
+/
 
-CREATE OR REPLACE PROCEDURE CALL_SP_USUARIOS_INFO(NUSUARIO IN NUMBER)
-AS
-    DATOS SYS_REFCURSOR;     
-    UID NUMBER;
-    UNOM VARCHAR2(150);
-    UAPELLIDO VARCHAR2(150);
-    UCORREO VARCHAR2(150);
-    UTELEFONO VARCHAR(150);
+-- Tabla auditor√≠a reservas
+create table reservas_auditoria (
+    id number generated by default on null as identity,
+    id_reserva number,
+    cambio varchar2(255),
+    usuario varchar2(100),
+    fecha_cambio timestamp default systimestamp,
+    constraint pk_reservas_auditoria primary key (id)
+);
+/
+
+-- plsql
+create or replace package hotel_pkg as
+    -- validamos num de telefono
+    function ValidarTelefono(telefono_in in varchar2) return number;
     
-BEGIN
-    SP_USUARIOS_INFO(DATOS,NUSUARIO);
-    LOOP
-        FETCH DATOS INTO UID,UNOM, UAPELLIDO,UCORREO,UTELEFONO;
-        EXIT WHEN DATOS%NOTFOUND;
-        DBMS_OUTPUT.PUT_LINE(' - ' || UID || ' ' || UNOM || ' ' || UAPELLIDO || ' '||UCORREO || ' ' || UTELEFONO  );
-    END LOOP;
-    CLOSE DATOS;
-END CALL_SP_USUARIOS_INFO;    
+    -- validamos el estado de la reserva
+    function ObtenerEstadoReserva(id_reserva in number) return varchar2;
+    
+    -- procedimiento insertar una nueva reserva
+    procedure InsertarReserva(
+        p_nombre in varchar2,
+        p_apellido in varchar2,
+        p_cedula in varchar2,
+        p_telefono in varchar2,
+        p_correo in varchar2,
+        p_tipo_habitacion in varchar2
+    );
+    
+    -- Procedimiento para actualizar una reserva existente
+    procedure ActualizarReserva(
+        p_id in number,
+        p_nombre in varchar2,
+        p_apellido in varchar2,
+        p_cedula in varchar2,
+        p_telefono in varchar2,
+        p_correo in varchar2
+    );
+    
+    -- Procedimiento para eliminar una reserva por su ID
+    procedure EliminarReserva(
+        p_id in number
+    );
+    
+    --  listamos las reservas por habitacion con un cursor
+    procedure ListarReservasPorTipoHabitacion(p_tipo in varchar2, p_reservas out sys_refcursor);
+    
+    -- Procedimiento para buscar reservas usando SQL din√°mico
+    procedure BuscarReservas(p_condicion in varchar2, p_reservas out sys_refcursor);
+
+end hotel_pkg;
+/
 
 
-EXEC CALL_SP_USUARIOS_INFO(2)
+
+
+-----------------------------------
+
+ejemplos de pruebas
+1.
+declare
+    v_es_valido number;
+begin
+    
+    v_es_valido := hotel_pkg.ValidarTelefono('1234567890');
+    
+    if v_es_valido = 1 then
+        dbms_output.put_line(' numero  valido.');
+    else
+        dbms_output.put_line(' numero NO  valido.');
+    end if;
+end;
+/
+
+
+ 3. 
+  create or replace trigger reserva_auditoria
+after insert on reservas
+for each row
+begin
+    insert into reservas_auditoria (id_reserva, cambio, usuario)
+    values (:new.id, 'Nueva reserva creada para ' || :new.nombre, sys_context('userenv', 'session_user'));
+end;
+/
+
+2.
+create or replace trigger insertreservaantes
+before insert on reservas
+for each row
+begin
+    if :new.nombre is null or length(trim(:new.nombre)) = 0 then
+        raise_application_error(-20002, 'El nombre no puede estar vac√≠o.'); -- este raise nos funcionara 
+    end if;
+end;
+/
+
+
+3. 
+set serveroutput on;
+-- plsql
+begin
+    -- Insertar un usuario 
+    insert into usuarios (username, nombre, apellido, correo, telefono, contrasena, activo)
+    values ('Sebas', 'Vasquez', 'Vasquez', 'Sebas@example.02', '123-456-7890', '0211', 1);   --Cambuamos para que se muestre 
+    commit;
+
+   
+    -- Consulta 1 num de telefonos
+    for rec in (select telefono from reservas where regexp_count(telefono, '2') >= 2 and regexp_count(telefono, '4') >= 2) loop
+        dbms_output.put_line('Tel√©fono con 2+ dos y 2+ cuatros: ' || rec.telefono);
+    end loop;
+
+    -- Consulta 2 Nombres de usuario
+    for rec in (select nombre, apellido from usuarios where regexp_like(nombre,'^t.*[0-9]$')) loop
+  dbms_output.put_line('Usuario con nombre : ' || rec.nombre || ' ' || rec.apellido);
+end loop;
+
+    call_sp_usuarios_info(1);
+
+    commit;
+exception
+    when others then
+        rollback;
+end;
+/
+------------------------
 
 
 
--- pl/sql
-SELECT telefono
-FROM reservas
-WHERE REGEXP_COUNT(telefono, '2') >= 2
-AND REGEXP_COUNT(telefono, '4') >= 2;
+-- funciones
+
+-- Contador ids
+create or replace function fn_cant_reservas(reserva_id number)
+return number
+is
+    v_count number;
+begin
+    select count(*)
+    into v_count
+    from reservas
+    where id = reserva_id;
+    
+    return v_count;
+end;
+/
+select fn_cant_reservas(10) from dual;
+------------------------------------------------------------------------------
+
+-- infoReservas
+create or replace procedure sp_reserva_info
+is
+    cursor c is
+        select r.id, r.nombre, r.apellido, r.cedula, r.telefono, r.correo, r.tipo_habitacion, r.activo
+        from reservas r;
+begin
+    for r in c loop
+        dbms_output.put_line('ID: ' || r.id || ' Nombre: ' || r.nombre ||
+        ' Apellido: ' || r.apellido || ' Cedula: ' || r.cedula ||
+        ' Tel√©fono: ' || r.telefono || ' Correo: ' || r.correo ||
+        ' Tipo de habitaci√≥n: ' || r.tipo_habitacion || ' Activo: ' || r.activo);
+    end loop;
+end;
+/
+
+exec sp_reserva_info;
+
+--------------------------------------------------------------------------------------
+
+                      -- triggers
+-- validar q el nombre no sea nulo
+create or replace trigger insertreservaantes
+before insert on reservas
+for each row
+begin
+    if :new.nombre is null or length(trim(:new.nombre)) = 0 then
+        raise_application_error(-20002, 'El nombre no puede estar vacio .');
+    end if;
+end;
+/
+
+-- Trigger que se activa al insertar un registro -> auditor√≠a
+create or replace trigger reserva_auditoria
+after insert on reservas
+for each row
+begin
+    insert into reservas_auditoria (id_reserva, cambio, usuario)
+    values (:new.id, 'Nueva reserva creada para ' || :new.nombre, sys_context('userenv', 'session_user'));
+end;
+/
+
+-- actualizar audioria
+create or replace trigger reservadespues
+after update on reservas
+for each row
+begin
+    if :old.activo <> :new.activo then -- <> : =!
+        insert into reservas_auditoria (id_reserva, cambio, usuario)
+        values (:new.id, 'Estado de reserva cambiado a ' || :new.activo, sys_context('userenv', 'session_user'));
+    end if;
+end;
+/
 
 
-SELECT id_rol, nombre, id_usuario, DECODE(id_rol,1, 'ADMIN'
-                                                ,2, 'USER'
-                                                ,3, 'USER',
-                                                id_rol) ROL
-FROM rol;
-
-
-
-SELECt NOMBRE, APELLIDO 
-FROM USUARIO
-WHERE REGEXP_LIKE(NOMBRE,'^Da{1,3}[^a].*a$');
+        
+        
+        
+        
+      
+        
+        
+        
+        
+ 
